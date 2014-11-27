@@ -25,8 +25,7 @@ import com.lidroid.xutils.BitmapUtils;
  * 
  * @param <T>
  * 
- *            这是一个抽象的Adapter基类，使用方法如上面,当需要监听相应的点击事件时,只需要继承这个抽象类,复写抽象方法
- * 
+ *            这是一个抽象的Adapter基类，使用方法如上面,当需要监听相应的点击事件时,只需要继承这个抽象类,复写抽象方法 示例如上所述。。
  */
 public abstract class QuickBaseAdapter<T> extends BaseAdapter {
 
