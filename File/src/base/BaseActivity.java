@@ -209,6 +209,15 @@ public class BaseActivity extends FragmentActivity {
 	public void showFragment(Fragment fragment) {
 		transaction.show(fragment).commit();
 	}
+
+	/**
+	 * 得到打印日志标签
+	 */
+
+	public String getTag() {
+		return this.getClass().getSimpleName();
+	}
+
 	// /**
 	// *
 	// * 存储临时的字符串数据,类似于SharedPreference

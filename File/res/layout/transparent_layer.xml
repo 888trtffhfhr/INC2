@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="fill_parent" 
+     android:layout_height="fill_parent"
+     android:background="#00FFFFFF"
+     android:gravity="center|bottom"
+     android:orientation="vertical"
+  >
+  <TextView 
+     android:id="@+id/text"
+     android:layout_width="wrap_content" 
+     android:layout_height="wrap_content"    
+     android:text="量身定制"
+     android:textSize="24dip"
+     android:layout_gravity="bottom|center" 
+     android:textColor="#ffffff"  
+     android:layout_marginBottom="60dip" 
+      />
+  <Button
+      android:clickable="false"
+      android:visibility="gone"
+     android:id="@+id/button"
+     android:textColor="@color/white"
+     android:layout_width="wrap_content" 
+     android:layout_height="wrap_content" 
+     android:text="马上体验" 
+     android:padding="8dip"
+     android:background="@drawable/b2c_detail_btn_red"
+     android:layout_marginBottom="20dp" 
+     android:layout_gravity="bottom|center" 
+   />
+ 
+</LinearLayout>
