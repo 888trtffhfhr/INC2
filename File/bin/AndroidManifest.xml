@@ -36,6 +36,12 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <receiver
+      	android:name="com.lidroid.zutils.http.netstate.NetworkStateReceiver" >
+        <intent-filter> 
+        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> 
+       	<action android:name="android.gzcpc.conn.CONNECTIVITY_CHANGE" />
+        </intent-filter> </receiver>
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"

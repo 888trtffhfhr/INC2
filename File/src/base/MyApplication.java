@@ -3,12 +3,17 @@ package base;
 import java.util.LinkedList;
 import java.util.List;
 
-import widget.net.DBConfig;
+import widget.utils.LogUtils;
+import widget.utils.NetChangeObserver;
+import widget.utils.NetWorkUtil;
+import widget.utils.SharedPreferencesUtils;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.os.Vibrator;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
 
 import com.baidu.location.BDLocation;
@@ -16,26 +21,24 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.GeofenceClient;
 import com.baidu.location.LocationClient;
 import com.lidroid.xutils.DbUtils;
-import com.lidroid.xutils.exception.DbException;
 
 public class MyApplication extends Application {
-	// private static MyApplication myApplication;
+	private final static String APP_TAG = "MYAPPLICATION";
+	private NetChangeObserver netChangeObserver;
+	private static MyApplication myApplication;
 	private List<Activity> activities;
 	/**
 	 * 操纵的全局数据库
 	 */
 	private DbUtils database;
-	/**
-	 * 配置全局的数据库变量
-	 */
-	private DBConfig config;
 
-	// public static MyApplication getIntance() {
-	// if (myApplication == null) {
-	// myApplication = new MyApplication();
-	// }
-	// return myApplication;
-	// }
+	public static MyApplication getIntance() {
+		if (myApplication == null) {
+			myApplication = new MyApplication();
+		}
+		return myApplication;
+	}
+
 	/**
 	 * 百度地图定位组件初始化
 	 */
@@ -44,6 +47,12 @@ public class MyApplication extends Application {
 	public GeofenceClient mGeofenceClient;
 	public MyLocationListener mMyLocationListener;
 	public Vibrator mVibrator;
+
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		initApp(this);
+	}
 
 	// 返回值：
 	// 61 ： GPS定位结果
@@ -56,31 +65,67 @@ public class MyApplication extends Application {
 	// 161： 表示网络定位结果
 	// 162~167： 服务端定位失败。
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
+	public void initApp(Application application) {
 		activities = new LinkedList<Activity>();
-		database = DbUtils.create(this, "config");
-		ShareSDK.initSDK(this);
-		mLocationClient = new LocationClient(this.getApplicationContext());
+		database = DbUtils.create(application, "config");
+		ShareSDK.initSDK(application);
+		mLocationClient = new LocationClient(
+				application.getApplicationContext());
 		mMyLocationListener = new MyLocationListener();
 		mLocationClient.registerLocationListener(mMyLocationListener);
-		mGeofenceClient = new GeofenceClient(getApplicationContext());
+		mGeofenceClient = new GeofenceClient(
+				application.getApplicationContext());
 
-		mVibrator = (Vibrator) getApplicationContext().getSystemService(
-				Service.VIBRATOR_SERVICE);
+		mVibrator = (Vibrator) application.getApplicationContext()
+				.getSystemService(Service.VIBRATOR_SERVICE);
+
+		// 注册网络监听广播类
+		NetworkStateReceiver.registerNetworkStateReceiver(application);
+		netChangeObserver = new MeNetChangeObserver();
+		NetworkStateReceiver.registerObserver(netChangeObserver);
+	}
+
+	/**
+	 * 网路状态观察者
+	 */
+
+	private class MeNetChangeObserver extends NetChangeObserver {
+
+		@Override
+		public void onConnect(NetWorkUtil.NetType type) {
+			super.onConnect(type);
+			switch (type) {
+			case wifi:
+				Toast.makeText(getApplicationContext(), "当前wifi已连接",
+						Toast.LENGTH_SHORT).show();
+				break;
+			default:
+				Toast.makeText(getApplicationContext(), "当前为移动网络,注意流量哦",
+						Toast.LENGTH_SHORT).show();
+				break;
+			}
+
+		}
+
+		@Override
+		public void onDisConnect() {
+			super.onDisConnect();
+			Toast.makeText(getApplicationContext(), "网络不可用", Toast.LENGTH_SHORT)
+					.show();
+
+		}
 	}
 
 	/**
 	 * 将首次加载的欢迎界面状态存入数据库
 	 */
 	public void saveFirstSplash() {
-		config = new DBConfig();
-		config.setFirst(false);
-		try {
-			database.save(config);
-		} catch (DbException e) {
-			e.printStackTrace();
+		if (isFirst()) {
+			LogUtils.i(APP_TAG, "是第一次");
+			SharedPreferencesUtils.WriteSharedPreferences(this, "Config",
+					"isFirst", "false");
+		} else {
+			LogUtils.i(APP_TAG, "不是第一次了");
 		}
 	}
 
@@ -90,25 +135,9 @@ public class MyApplication extends Application {
 	 * @return
 	 */
 	public boolean isFirst() {
-		List<DBConfig> findAll;
-		try {
-			findAll = database.findAll(DBConfig.class);
-			if (findAll != null) {
-
-				for (int i = 0; i < findAll.size(); i++) {
-					if (!findAll.get(i).isFirst) {
-						System.out.println("不是第一次");
-						return false;
-					} else {
-					}
-				}
-			} else {
-				return true;
-			}
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
-		return true;
+		return TextUtils.isEmpty((String) SharedPreferencesUtils
+				.getValueByName(this, "Config", "isFirst",
+						SharedPreferencesUtils.STRING));
 	}
 
 	/**
