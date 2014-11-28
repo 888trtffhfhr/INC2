@@ -3,15 +3,12 @@ package base;
 import java.util.LinkedList;
 import java.util.List;
 
-import widget.utils.LogUtils;
 import widget.utils.NetChangeObserver;
 import widget.utils.NetWorkUtil;
-import widget.utils.SharedPreferencesUtils;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.os.Vibrator;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import cn.sharesdk.framework.ShareSDK;
@@ -110,34 +107,49 @@ public class MyApplication extends Application {
 		@Override
 		public void onDisConnect() {
 			super.onDisConnect();
-			Toast.makeText(getApplicationContext(), "网络不可用", Toast.LENGTH_SHORT)
-					.show();
+
+			/**
+			 * TODO
+			 */
+
+			// CustomDialog.Builder builder = new CustomDialog.Builder(this);
+			// builder.setTitle("网络设置").setMessage("当前网络不可用!请设置网络");
+			// builder.setPositiveButton("移动网络",
+			// new DialogInterface.OnClickListener() {
+			//
+			// @Override
+			// public void onClick(DialogInterface dialog, int which) {
+			// Intent intent = new Intent(
+			// Settings.ACTION_DATA_ROAMING_SETTINGS);
+			// context.startActivityForResult(intent, 0);
+			// dialog.dismiss();
+			// }
+			// }).setNegativeButton("WIFI设置 ",
+			// new DialogInterface.OnClickListener() {
+			//
+			// @Override
+			// public void onClick(DialogInterface dialog, int which) {
+			// Intent intent = new Intent(
+			// Settings.ACTION_WIFI_SETTINGS);
+			// context.startActivityForResult(intent, 0);
+			// dialog.dismiss();
+			// }
+			//
+			// });
+			// CustomDialog dialog = builder.create();
+			// dialog.setCanceledOnTouchOutside(false);
+			// dialog.setOnKeyListener(new OnKeyListener() {
+			//
+			// @Override
+			// public boolean onKey(DialogInterface dialog, int keyCode,
+			// KeyEvent event) {
+			// context.finish();
+			// return true;
+			// }
+			// });
+			// dialog.show();
 
 		}
-	}
-
-	/**
-	 * 将首次加载的欢迎界面状态存入数据库
-	 */
-	public void saveFirstSplash() {
-		if (isFirst()) {
-			LogUtils.i(APP_TAG, "是第一次");
-			SharedPreferencesUtils.WriteSharedPreferences(this, "Config",
-					"isFirst", "false");
-		} else {
-			LogUtils.i(APP_TAG, "不是第一次了");
-		}
-	}
-
-	/**
-	 * 判断是否是第一次装App
-	 * 
-	 * @return
-	 */
-	public boolean isFirst() {
-		return TextUtils.isEmpty((String) SharedPreferencesUtils
-				.getValueByName(this, "Config", "isFirst",
-						SharedPreferencesUtils.STRING));
 	}
 
 	/**
@@ -210,4 +222,30 @@ public class MyApplication extends Application {
 
 	}
 
+	// public DisplayMetrics getDisplayMetrics() {
+	// DisplayMetrics displayMetrics = new DisplayMetrics();
+	// WindowManager windowManager = (WindowManager)
+	// getSystemService(Context.WINDOW_SERVICE);
+	// windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+	// return displayMetrics;
+	// }
+	//
+	// /**
+	// * 获取屏幕宽度
+	// *
+	// * @return
+	// */
+	// public int getScreenWidth() {
+	// return getDisplayMetrics().widthPixels;
+	//
+	// }
+	//
+	// /**
+	// * 获取屏幕长度
+	// *
+	// * @return
+	// */
+	// public int getScreenHeight() {
+	// return getDisplayMetrics().heightPixels;
+	// }
 }

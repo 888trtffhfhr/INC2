@@ -17,6 +17,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 
+import com.example.test2.R;
+
 /**
  * @author 菲克
  * 
@@ -208,6 +210,27 @@ public class BaseActivity extends FragmentActivity {
 	 */
 	public void showFragment(Fragment fragment) {
 		transaction.show(fragment).commit();
+	}
+
+	/**
+	 * 切换fragment
+	 * 
+	 * @param from
+	 * @param to
+	 */
+	public void switchFragment(int containerID, Fragment from, Fragment to) {
+		if (from != to) {
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction();
+			transaction.setCustomAnimations(R.anim.fade_forward,
+					R.anim.fade_back);
+			if (!to.isAdded()) {
+				transaction.hide(from).add(containerID, to).commit();
+			} else {
+				transaction.hide(from).show(to).commit();
+			}
+
+		}
 	}
 
 	/**

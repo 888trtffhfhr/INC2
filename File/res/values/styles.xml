@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="AppBaseTheme" parent="android:Theme.Light">
     </style>
 
@@ -27,5 +27,47 @@
     </style>
     <style name="SlideAppTheme" parent="@android:style/Theme.NoTitleBar">
         <item name="android:windowAnimationStyle">@style/ActivityTransitions</item>
+    </style>
+    <!-- PopupWindows -->
+    <style name="grouplist_item_textview">
+        <item name="android:textSize">18.0sp</item>
+        <item name="android:textColor">#ffffffff</item>
+    </style>
+    <!-- text -->
+    <style name="text_property">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <!-- header_property -->
+    <style name="header_property">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <!-- 图标大小 -->
+    <style name="icon_size">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+     <!-- text -->
+    <style name="icon_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+    <!--自定义dialog  -->
+    <style name="custom_dialog_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:padding">2dp</item>
     </style>
 </resources>

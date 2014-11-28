@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/header_height" 
+    android:background="@drawable/alltype_normal"
+    >
+   	<Button
+   	    android:id="@+id/menu_button"
+   	    android:layout_margin="5dp" 
+   	    android:background="@drawable/button_menu"
+   	   	style="@style/header_property"
+   	    />
+	<Button 
+	    android:id="@+id/location"
+	    android:layout_width="80dp"
+	    android:layout_height="wrap_content"
+	    android:textSize="15sp"
+	    android:textColor="@color/white"
+	    android:layout_centerInParent="true"
+	    android:text="北京"
+	    android:background="@null"
+	    android:drawableRight="@drawable/button_arrow"
+	    />
+	<Button 
+	    android:id="@+id/search"
+	    style="@style/header_property"
+	    android:background="@drawable/b2c_search_icon"
+	    android:layout_alignParentRight="true"
+	    android:layout_marginRight="10dp"
+	    />
+	<Button 
+	    android:id="@+id/code"
+	    android:layout_toLeftOf="@id/search"
+	    android:layout_marginRight="10dp"
+	    android:background="@drawable/button_code"
+	    style="@style/header_property"
+	    android:text="扫一扫"
+	    android:textSize="7dp"
+	    />
+	
+	
+</RelativeLayout>

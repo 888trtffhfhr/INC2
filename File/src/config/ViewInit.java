@@ -25,4 +25,5 @@ public class ViewInit {
 		bitmapUtils.configDefaultBitmapConfig(Config.RGB_565);
 		return bitmapUtils;
 	}
+
 }

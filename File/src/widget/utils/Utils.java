@@ -12,16 +12,24 @@ import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnKeyListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Environment;
+import android.provider.Settings;
+import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import com.view.CustomDialog;
 
 public class Utils {
 
@@ -135,57 +143,88 @@ public class Utils {
 		return b;
 	}
 
-	/**
-	 * 检测网络状况
-	 */
-	public static boolean hasNetwork(Context context) {
-		android.net.ConnectivityManager cManager = (android.net.ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		android.net.NetworkInfo info = cManager.getActiveNetworkInfo();
-		if (info != null && info.isAvailable()) {
-			return true;
+	public static boolean checkNetwork(final Activity context) {
+		boolean netSataus = NetWorkUtil.isNetworkAvailable(context);
+		if (!netSataus) {
+			CustomDialog.Builder builder = new CustomDialog.Builder(context);
+			builder.setTitle("网络设置").setMessage("当前网络不可用!请设置网络");
+			builder.setPositiveButton("移动网络",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent intent = new Intent(
+									Settings.ACTION_DATA_ROAMING_SETTINGS);
+							context.startActivityForResult(intent, 0);
+							dialog.dismiss();
+						}
+					}).setNegativeButton("WIFI设置 ",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							Intent intent = new Intent(
+									Settings.ACTION_WIFI_SETTINGS);
+							context.startActivityForResult(intent, 0);
+							dialog.dismiss();
+						}
+
+					});
+			CustomDialog dialog = builder.create();
+			dialog.setCanceledOnTouchOutside(false);
+			dialog.setOnKeyListener(new OnKeyListener() {
+
+				@Override
+				public boolean onKey(DialogInterface dialog, int keyCode,
+						KeyEvent event) {
+					context.finish();
+					return true;
+				}
+			});
+			dialog.show();
+
 		} else {
-			return false;
 		}
+		return netSataus;
 	}
 
 	/**
-	 * 检测网络是否可用
+	 * 
+	 * @Title: isFirstRun
+	 * @说 明:判断程序是否第一次运行
+	 * @参 数: @return
+	 * @return boolean 返回类型
+	 * @throws
+	 */
+	public static boolean isFirstRun(Context context) {
+		boolean isFirstRun = false;
+		SharedPreferences sp = context.getSharedPreferences("isFirst",
+				Context.MODE_PRIVATE);
+		int version = sp.getInt("version", 0);
+		int appVersion = getVersionCode(context);
+		if (version != appVersion) {
+			sp.edit().putInt("version", appVersion).commit();
+			isFirstRun = true;
+		}
+		return isFirstRun;
+	}
+
+	/**
+	 * 检测版本号
 	 * 
 	 * @param context
 	 * @return
 	 */
-	public static boolean isNetworkAvailable(Context context) {
-		android.net.ConnectivityManager connectivity = (android.net.ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE); // 获取系统网络连接管理�?
-		if (connectivity == null) { // 如果网络管理器为null
-			return false; // 返回false表明网络无法连接
-		} else {
-			android.net.NetworkInfo[] info = connectivity.getAllNetworkInfo(); // 获取�?��的网络连接对�?
-			if (info != null) { // 网络信息不为null�?
-				for (int i = 0; i < info.length; i++) { // 遍历网路连接对象
-					if (info[i].isConnected()) { // 当有�?��网络连接对象连接上网络时
-						return true; // 返回true表明网络连接正常
-					}
-				}
-			}
+	public static int getVersionCode(Context context)// 获取版本号(内部识别号)
+	{
+		try {
+			PackageInfo pi = context.getPackageManager().getPackageInfo(
+					context.getPackageName(), 0);
+			return pi.versionCode;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+			return 0;
 		}
-		return false;
-	}
-
-	public static boolean isMobileNetworkAvailable(Context context) {
-		// 获取应用上下文
-		ConnectivityManager connectivityManager = (ConnectivityManager) context
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		// 获取系统的连接服务
-		NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
-		// 获取网络的连接类型
-		if (activeNetInfo != null
-				&& activeNetInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
-			// 判断是否是3G
-			return true;
-		}
-		return false;
 	}
 
 	/**

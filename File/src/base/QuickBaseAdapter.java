@@ -80,6 +80,7 @@ public abstract class QuickBaseAdapter<T> extends BaseAdapter {
 		this.context = context;
 		this.mClasses = mClasses;
 		this.layoutID = layoutID;
+		this.properties = new ArrayList<QuickBaseAdapter.Property>();
 	}
 
 	@Override
